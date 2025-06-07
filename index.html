@@ -36,7 +36,7 @@
       border-radius: 5px;
     }
     button {
-      background-color: #00ff88;
+      background-color: #ffffff;
       color: #000;
       padding: 10px 20px;
       margin-top: 20px;
@@ -46,7 +46,7 @@
       width: 100%;
     }
     button:hover {
-      background-color: #00cc6e;
+      background-color: #dddddd;
     }
     .result {
       margin-top: 20px;
@@ -165,18 +165,18 @@
           labels: odds.map((o, i) => `Odd ${i + 1}`),
           datasets: [
             {
-              label: 'Lucro Esperado',
-              data: profit,
-              borderColor: '#00ff88',
-              backgroundColor: '#00ff8866',
-              fill: true,
-              tension: 0.3
-            },
-            {
               label: 'Investimento',
               data: stakes,
               borderColor: '#ffcc00',
               backgroundColor: '#ffcc0066',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Lucro Esperado',
+              data: profit,
+              borderColor: '#00ff88',
+              backgroundColor: '#00ff8866',
               fill: true,
               tension: 0.3
             }
