@@ -36,8 +36,6 @@
       border-radius: 5px;
     }
     button {
-      background-color: #ffffff;
-      color: #000;
       padding: 10px 20px;
       margin-top: 20px;
       border: none;
@@ -46,7 +44,15 @@
       width: 100%;
     }
     button:hover {
-      background-color: #dddddd;
+      opacity: 0.9;
+    }
+    .add-button {
+      background-color: #ffffff;
+      color: #000;
+    }
+    .calculate-button {
+      background-color: #00ff88;
+      color: #000;
     }
     .result {
       margin-top: 20px;
@@ -93,8 +99,8 @@
       </div>
     </div>
 
-    <button onclick="addOdd()">+ Adicionar Odd</button>
-    <button onclick="calculateDutching()">Calcular</button>
+    <button class="add-button" onclick="addOdd()">+ Adicionar Odd</button>
+    <button class="calculate-button" onclick="calculateDutching()">Calcular</button>
 
     <div class="result" id="results"></div>
     <canvas id="dutchingChart"></canvas>
@@ -151,7 +157,7 @@
       let resultHtml = '<h3>Distribuição das Apostas</h3>';
       resultHtml += '<table><thead><tr><th>Odd</th><th>Investimento</th><th>Lucro Esperado</th><th>Lucro Total</th></tr></thead><tbody>';
       stakes.forEach((s, i) => {
-        resultHtml += `<tr><td style="color: white">${odds[i].toFixed(2)}</td><td style="color: white">R$ ${s.toFixed(2)}</td><td style="color: #00ff88">R$ ${profit[i].toFixed(2)}</td><td style="color: #00ff88">R$ ${totalReturn[i].toFixed(2)}</td></tr>`;
+        resultHtml += `<tr><td style="color: white">${odds[i].toFixed(2)}</td><td style="color: white">R$ ${s.toFixed(2)}</td><td class="green">R$ ${profit[i].toFixed(2)}</td><td class="green">R$ ${totalReturn[i].toFixed(2)}</td></tr>`;
       });
       resultHtml += '</tbody></table>';
       document.getElementById('results').innerHTML = resultHtml;
@@ -165,18 +171,18 @@
           labels: odds.map((o, i) => `Odd ${i + 1}`),
           datasets: [
             {
-              label: 'Investimento',
-              data: stakes,
-              borderColor: '#ffcc00',
-              backgroundColor: '#ffcc0066',
-              fill: true,
-              tension: 0.3
-            },
-            {
               label: 'Lucro Esperado',
               data: profit,
               borderColor: '#00ff88',
               backgroundColor: '#00ff8866',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Investimento',
+              data: stakes,
+              borderColor: '#ffcc00',
+              backgroundColor: '#ffcc0066',
               fill: true,
               tension: 0.3
             }
