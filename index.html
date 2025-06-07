@@ -1,58 +1,199 @@
-<div style="max-width: 500px; margin: auto; font-family: Arial, sans-serif;">
-  <h2>Calculadora Dutching</h2>
-  <label>Valor total da aposta (stake):</label><br>
-  <input type="number" id="totalStake" placeholder="Ex: 100" step="0.01"><br><br>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Calculadora Dutching</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #2c2c2c;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+    }
+    h2, h3 {
+      text-align: center;
+      color: #00ff88;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #00ff88;
+      color: #000;
+      padding: 10px 20px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #00cc6e;
+    }
+    .result {
+      margin-top: 20px;
+      border-top: 1px solid #444;
+      padding-top: 20px;
+    }
+    .odd-group {
+      margin-bottom: 10px;
+    }
+    canvas {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Calculadora Dutching</h2>
+    <label for="totalStake">Valor Total da Aposta (Stake):</label>
+    <input type="number" id="totalStake" placeholder="Ex: 100" step="0.01">
 
-  <div id="oddsInputs">
-    <label>Odd 1:</label>
-    <input type="number" class="odd" step="0.01"><br><br>
+    <div id="oddsInputs">
+      <div class="odd-group">
+        <label>Odd 1:</label>
+        <input type="text" class="odd" step="0.01" oninput="formatDecimalInput(this)">
+      </div>
+    </div>
+
+    <button onclick="addOdd()">+ Adicionar Odd</button>
+    <button onclick="calculateDutching()">Calcular</button>
+
+    <div class="result" id="results"></div>
+    <canvas id="chart"></canvas>
   </div>
 
-  <button onclick="addOdd()">+ Adicionar Odd</button><br><br>
-  <button onclick="calculateDutching()">Calcular</button><br><br>
+  <script>
+    let oddCount = 1;
+    let chart;
 
-  <div id="results" style="border-top: 1px solid #ccc; padding-top: 10px;"></div>
-</div>
+    function addOdd() {
+      oddCount++;
+      const div = document.createElement('div');
+      div.className = 'odd-group';
+      div.innerHTML = `<label>Odd ${oddCount}:</label><input type="text" class="odd" step="0.01" oninput="formatDecimalInput(this)">`;
+      document.getElementById('oddsInputs').appendChild(div);
+    }
 
-<script>
-let oddCount = 1;
+    function formatDecimalInput(el) {
+      let value = el.value.replace(/[^\d]/g, '');
 
-function addOdd() {
-  oddCount++;
-  const container = document.getElementById('oddsInputs');
-  const label = document.createElement('label');
-  label.innerText = `Odd ${oddCount}:`;
-  const input = document.createElement('input');
-  input.type = 'number';
-  input.step = '0.01';
-  input.className = 'odd';
-  container.appendChild(label);
-  container.appendChild(input);
-  container.appendChild(document.createElement('br'));
-  container.appendChild(document.createElement('br'));
-}
+      if (value.length > 3) {
+        let intPart = value.slice(0, value.length - 2);
+        let decimalPart = value.slice(value.length - 2);
+        value = intPart + '.' + decimalPart;
+      } else if (value.length > 0) {
+        value = '0.' + value.padStart(2, '0');
+      }
 
-function calculateDutching() {
-  const stake = parseFloat(document.getElementById('totalStake').value);
-  const odds = Array.from(document.getElementsByClassName('odd'))
-    .map(input => parseFloat(input.value))
-    .filter(val => !isNaN(val) && val > 1);
+      const number = parseFloat(value);
+      if (!isNaN(number)) {
+        el.value = number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+    }
 
-  if (!stake || odds.length < 2) {
-    alert('Insira um valor de stake e pelo menos duas odds válidas (acima de 1).');
-    return;
-  }
+    function parseInputValue(input) {
+      return parseFloat(input.value.replace('.', '').replace(',', '.'));
+    }
 
-  const inverseSum = odds.reduce((sum, odd) => sum + 1 / odd, 0);
-  const stakes = odds.map(odd => (stake / odd) / inverseSum);
-  const profit = stakes.map((s, i) => (s * odds[i]) - stake);
+    function calculateDutching() {
+      const stake = parseFloat(document.getElementById('totalStake').value);
+      const odds = Array.from(document.getElementsByClassName('odd'))
+        .map(input => parseInputValue(input))
+        .filter(val => !isNaN(val) && val > 1);
 
-  let resultHtml = '<strong>Distribuição das Apostas:</strong><br>';
-  stakes.forEach((s, i) => {
-    resultHtml += `Odd ${i + 1}: R$ ${s.toFixed(2)}<br>`;
-  });
+      if (!stake || odds.length < 2) {
+        alert('Insira uma stake e pelo menos duas odds válidas (acima de 1).');
+        return;
+      }
 
-  resultHtml += `<br><strong>Lucro Esperado:</strong><br>R$ ${profit[0].toFixed(2)}`;
-  document.getElementById('results').innerHTML = resultHtml;
-}
-</script>
+      const inverseSum = odds.reduce((sum, odd) => sum + 1 / odd, 0);
+      const stakes = odds.map(odd => (stake / odd) / inverseSum);
+      const profit = stakes.map((s, i) => (s * odds[i]) - stake);
+
+      let resultHtml = '<h3>Distribuição das Apostas</h3><ul>';
+      stakes.forEach((s, i) => {
+        resultHtml += `<li>Odd ${i + 1}: R$ ${s.toFixed(2)}</li>`;
+      });
+      resultHtml += '</ul>';
+      resultHtml += `<h3>Lucro Esperado: <span style="color: #00ff88">R$ ${profit[0].toFixed(2)}</span></h3>`;
+      document.getElementById('results').innerHTML = resultHtml;
+
+      renderChart(odds, stakes, profit);
+    }
+
+    function renderChart(odds, stakes, profits) {
+      const ctx = document.getElementById('chart').getContext('2d');
+      const labels = odds.map((_, i) => `Odd ${i + 1}`);
+
+      if (chart) {
+        chart.destroy();
+      }
+
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Investimento (R$)',
+              data: stakes,
+              backgroundColor: '#00bfff'
+            },
+            {
+              label: 'Lucro Esperado (R$)',
+              data: profits,
+              backgroundColor: '#00ff88'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#fff'
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': R$ ' + context.parsed.y.toFixed(2);
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#fff' },
+              grid: { color: '#444' }
+            },
+            y: {
+              ticks: { color: '#fff' },
+              grid: { color: '#444' }
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>
