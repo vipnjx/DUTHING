@@ -12,14 +12,14 @@
       padding: 20px;
     }
     .container {
-      max-width: 700px;
+      max-width: 900px;
       margin: auto;
       background: #2c2c2c;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+      box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
     }
-    h2, h3 {
+    h2 {
       text-align: center;
       color: #00ff88;
     }
@@ -29,7 +29,7 @@
     }
     input {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       background: #333;
       color: #fff;
       border: 1px solid #555;
@@ -50,14 +50,29 @@
     }
     .result {
       margin-top: 20px;
-      border-top: 1px solid #444;
       padding-top: 20px;
     }
     .odd-group {
       margin-bottom: 10px;
     }
     canvas {
-      margin-top: 30px;
+      margin-top: 40px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #444;
+    }
+    th {
+      color: #00ff88;
+    }
+    .green {
+      color: #00ff88;
     }
   </style>
 </head>
@@ -78,12 +93,11 @@
     <button onclick="calculateDutching()">Calcular</button>
 
     <div class="result" id="results"></div>
-    <canvas id="chart"></canvas>
+    <canvas id="dutchingChart"></canvas>
   </div>
 
   <script>
     let oddCount = 1;
-    let chart;
 
     function addOdd() {
       oddCount++;
@@ -95,7 +109,6 @@
 
     function formatDecimalInput(el) {
       let value = el.value.replace(/[^\d]/g, '');
-
       if (value.length > 3) {
         let intPart = value.slice(0, value.length - 2);
         let decimalPart = value.slice(value.length - 2);
@@ -114,11 +127,12 @@
       return parseFloat(input.value.replace('.', '').replace(',', '.'));
     }
 
+    let chartInstance = null;
+
     function calculateDutching() {
       const stake = parseFloat(document.getElementById('totalStake').value);
-      const odds = Array.from(document.getElementsByClassName('odd'))
-        .map(input => parseInputValue(input))
-        .filter(val => !isNaN(val) && val > 1);
+      const oddsInputs = Array.from(document.getElementsByClassName('odd'));
+      const odds = oddsInputs.map(input => parseInputValue(input)).filter(val => !isNaN(val) && val > 1);
 
       if (!stake || odds.length < 2) {
         alert('Insira uma stake e pelo menos duas odds válidas (acima de 1).');
@@ -129,67 +143,47 @@
       const stakes = odds.map(odd => (stake / odd) / inverseSum);
       const profit = stakes.map((s, i) => (s * odds[i]) - stake);
 
-      let resultHtml = '<h3>Distribuição das Apostas</h3><ul>';
+      let resultHtml = '<h3>Distribuição das Apostas</h3>';
+      resultHtml += '<table><thead><tr><th>Odd</th><th>Valor Apostado</th><th>Lucro Esperado</th></tr></thead><tbody>';
       stakes.forEach((s, i) => {
-        resultHtml += `<li>Odd ${i + 1}: R$ ${s.toFixed(2)}</li>`;
+        resultHtml += `<tr><td>${odds[i].toFixed(2)}</td><td class="green">R$ ${s.toFixed(2)}</td><td class="green">R$ ${profit[i].toFixed(2)}</td></tr>`;
       });
-      resultHtml += '</ul>';
-      resultHtml += `<h3>Lucro Esperado: <span style="color: #00ff88">R$ ${profit[0].toFixed(2)}</span></h3>`;
+      resultHtml += '</tbody></table>';
       document.getElementById('results').innerHTML = resultHtml;
 
-      renderChart(odds, stakes, profit);
-    }
+      const ctx = document.getElementById('dutchingChart').getContext('2d');
+      if (chartInstance) chartInstance.destroy();
 
-    function renderChart(odds, stakes, profits) {
-      const ctx = document.getElementById('chart').getContext('2d');
-      const labels = odds.map((_, i) => `Odd ${i + 1}`);
-
-      if (chart) {
-        chart.destroy();
-      }
-
-      chart = new Chart(ctx, {
-        type: 'bar',
+      chartInstance = new Chart(ctx, {
+        type: 'line',
         data: {
-          labels,
+          labels: odds.map((o, i) => `Odd ${i + 1}`),
           datasets: [
             {
-              label: 'Investimento (R$)',
+              label: 'Valor Apostado',
               data: stakes,
-              backgroundColor: '#00bfff'
+              borderColor: '#00ff88',
+              backgroundColor: '#00ff8866',
+              fill: true,
+              tension: 0.3
             },
             {
-              label: 'Lucro Esperado (R$)',
-              data: profits,
-              backgroundColor: '#00ff88'
+              label: 'Lucro Esperado',
+              data: profit,
+              borderColor: '#ffcc00',
+              backgroundColor: '#ffcc0066',
+              fill: true,
+              tension: 0.3
             }
           ]
         },
         options: {
-          responsive: true,
           plugins: {
-            legend: {
-              labels: {
-                color: '#fff'
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return context.dataset.label + ': R$ ' + context.parsed.y.toFixed(2);
-                }
-              }
-            }
+            legend: { labels: { color: 'white' } }
           },
           scales: {
-            x: {
-              ticks: { color: '#fff' },
-              grid: { color: '#444' }
-            },
-            y: {
-              ticks: { color: '#fff' },
-              grid: { color: '#444' }
-            }
+            x: { ticks: { color: 'white' } },
+            y: { ticks: { color: 'white' }, beginAtZero: true }
           }
         }
       });
