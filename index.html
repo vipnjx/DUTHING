@@ -79,7 +79,7 @@
 <body>
   <div class="container">
     <h2>Calculadora Dutching</h2>
-    <label for="totalStake">Valor Total da Aposta (Stake):</label>
+    <label for="totalStake">Valor Investido:</label>
     <input type="number" id="totalStake" placeholder="Ex: 100" step="0.01">
 
     <div id="oddsInputs">
@@ -145,7 +145,7 @@
       const totalReturn = stakes.map((s, i) => s * odds[i]);
 
       let resultHtml = '<h3>Distribuição das Apostas</h3>';
-      resultHtml += '<table><thead><tr><th>Odd</th><th>Valor Apostado</th><th>Lucro Esperado</th><th>Lucro Total</th></tr></thead><tbody>';
+      resultHtml += '<table><thead><tr><th>Odd</th><th>Investimento</th><th>Lucro Esperado</th><th>Lucro Total</th></tr></thead><tbody>';
       stakes.forEach((s, i) => {
         resultHtml += `<tr><td>${odds[i].toFixed(2)}</td><td class="green">R$ ${s.toFixed(2)}</td><td class="green">R$ ${profit[i].toFixed(2)}</td><td class="green">R$ ${totalReturn[i].toFixed(2)}</td></tr>`;
       });
@@ -161,7 +161,7 @@
           labels: odds.map((o, i) => `Odd ${i + 1}`),
           datasets: [
             {
-              label: 'Valor Apostado',
+              label: 'Investimento',
               data: stakes,
               borderColor: '#00ff88',
               backgroundColor: '#00ff8866',
