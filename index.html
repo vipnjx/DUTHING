@@ -1,0 +1,58 @@
+<div style="max-width: 500px; margin: auto; font-family: Arial, sans-serif;">
+  <h2>Calculadora Dutching</h2>
+  <label>Valor total da aposta (stake):</label><br>
+  <input type="number" id="totalStake" placeholder="Ex: 100" step="0.01"><br><br>
+
+  <div id="oddsInputs">
+    <label>Odd 1:</label>
+    <input type="number" class="odd" step="0.01"><br><br>
+  </div>
+
+  <button onclick="addOdd()">+ Adicionar Odd</button><br><br>
+  <button onclick="calculateDutching()">Calcular</button><br><br>
+
+  <div id="results" style="border-top: 1px solid #ccc; padding-top: 10px;"></div>
+</div>
+
+<script>
+let oddCount = 1;
+
+function addOdd() {
+  oddCount++;
+  const container = document.getElementById('oddsInputs');
+  const label = document.createElement('label');
+  label.innerText = `Odd ${oddCount}:`;
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.step = '0.01';
+  input.className = 'odd';
+  container.appendChild(label);
+  container.appendChild(input);
+  container.appendChild(document.createElement('br'));
+  container.appendChild(document.createElement('br'));
+}
+
+function calculateDutching() {
+  const stake = parseFloat(document.getElementById('totalStake').value);
+  const odds = Array.from(document.getElementsByClassName('odd'))
+    .map(input => parseFloat(input.value))
+    .filter(val => !isNaN(val) && val > 1);
+
+  if (!stake || odds.length < 2) {
+    alert('Insira um valor de stake e pelo menos duas odds válidas (acima de 1).');
+    return;
+  }
+
+  const inverseSum = odds.reduce((sum, odd) => sum + 1 / odd, 0);
+  const stakes = odds.map(odd => (stake / odd) / inverseSum);
+  const profit = stakes.map((s, i) => (s * odds[i]) - stake);
+
+  let resultHtml = '<strong>Distribuição das Apostas:</strong><br>';
+  stakes.forEach((s, i) => {
+    resultHtml += `Odd ${i + 1}: R$ ${s.toFixed(2)}<br>`;
+  });
+
+  resultHtml += `<br><strong>Lucro Esperado:</strong><br>R$ ${profit[0].toFixed(2)}`;
+  document.getElementById('results').innerHTML = resultHtml;
+}
+</script>
