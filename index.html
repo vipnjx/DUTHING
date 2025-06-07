@@ -87,6 +87,10 @@
         <label>Odd 1:</label>
         <input type="text" class="odd" step="0.01" oninput="formatDecimalInput(this)">
       </div>
+      <div class="odd-group">
+        <label>Odd 2:</label>
+        <input type="text" class="odd" step="0.01" oninput="formatDecimalInput(this)">
+      </div>
     </div>
 
     <button onclick="addOdd()">+ Adicionar Odd</button>
@@ -97,7 +101,7 @@
   </div>
 
   <script>
-    let oddCount = 1;
+    let oddCount = 2;
 
     function addOdd() {
       oddCount++;
@@ -161,18 +165,18 @@
           labels: odds.map((o, i) => `Odd ${i + 1}`),
           datasets: [
             {
-              label: 'Investimento',
-              data: stakes,
-              borderColor: '#ffcc00',
-              backgroundColor: '#ffcc0066',
-              fill: true,
-              tension: 0.3
-            },
-            {
               label: 'Lucro Esperado',
               data: profit,
               borderColor: '#00ff88',
               backgroundColor: '#00ff8866',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Investimento',
+              data: stakes,
+              borderColor: '#ffcc00',
+              backgroundColor: '#ffcc0066',
               fill: true,
               tension: 0.3
             }
