@@ -78,7 +78,7 @@
       color: #00ff88;
     }
     .green {
-      color: #00ff88;
+      color: #ffffff;
     }
   </style>
 </head>
@@ -171,18 +171,18 @@
           labels: odds.map((o, i) => `Odd ${i + 1}`),
           datasets: [
             {
-              label: 'Lucro Esperado',
-              data: profit,
-              borderColor: '#ffcc00',
-              backgroundColor: '#ffcc0066',
-              fill: true,
-              tension: 0.3
-            },
-            {
               label: 'Investimento',
               data: stakes,
               borderColor: '#00ff88',
               backgroundColor: '#00ff8866',
+              fill: true,
+              tension: 0.3
+            },
+            {
+              label: 'Lucro Esperado',
+              data: profit,
+              borderColor: '#ffcc00',
+              backgroundColor: '#ffcc0066',
               fill: true,
               tension: 0.3
             }
