@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Calculadora Dutching</title>
+  <title>Operação IA Bet</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -21,7 +21,7 @@
     }
     h2 {
       text-align: center;
-      color: #00ff88;
+      color: #ffffff;
     }
     label {
       display: block;
@@ -84,7 +84,7 @@
 </head>
 <body>
   <div class="container">
-    <h2>Calculadora Dutching</h2>
+    <h2>Operação IA Bet</h2>
     <label for="totalStake">Valor Investido (R$):</label>
     <input type="number" id="totalStake" step="0.01">
 
@@ -157,7 +157,7 @@
       let resultHtml = '<h3>Distribuição das Apostas</h3>';
       resultHtml += '<table><thead><tr><th>Odd</th><th>Investimento</th><th>Lucro Esperado</th><th>Lucro Total</th></tr></thead><tbody>';
       stakes.forEach((s, i) => {
-        resultHtml += `<tr><td style="color: white">${odds[i].toFixed(2)}</td><td style="color: white">R$ ${s.toFixed(2)}</td><td class="green">R$ ${profit[i].toFixed(2)}</td><td class="green">R$ ${totalReturn[i].toFixed(2)}</td></tr>`;
+        resultHtml += `<tr><td style="color: white">${odds[i].toFixed(2)}</td><td class="green">R$ ${s.toFixed(2)}</td><td class="green">R$ ${profit[i].toFixed(2)}</td><td class="green">R$ ${totalReturn[i].toFixed(2)}</td></tr>`;
       });
       resultHtml += '</tbody></table>';
       document.getElementById('results').innerHTML = resultHtml;
@@ -171,16 +171,16 @@
           labels: odds.map((o, i) => `Odd ${i + 1}`),
           datasets: [
             {
-              label: 'Lucro Esperado',
-              data: profit,
+              label: 'Investimento',
+              data: stakes,
               borderColor: '#00ff88',
               backgroundColor: '#00ff8866',
               fill: true,
               tension: 0.3
             },
             {
-              label: 'Investimento',
-              data: stakes,
+              label: 'Lucro Esperado',
+              data: profit,
               borderColor: '#ffcc00',
               backgroundColor: '#ffcc0066',
               fill: true,
