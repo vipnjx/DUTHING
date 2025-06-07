@@ -147,7 +147,7 @@
       let resultHtml = '<h3>Distribuição das Apostas</h3>';
       resultHtml += '<table><thead><tr><th>Odd</th><th>Investimento</th><th>Lucro Esperado</th><th>Lucro Total</th></tr></thead><tbody>';
       stakes.forEach((s, i) => {
-        resultHtml += `<tr><td>${odds[i].toFixed(2)}</td><td style="color: white">R$ ${s.toFixed(2)}</td><td style="color: white">R$ ${profit[i].toFixed(2)}</td><td style="color: white">R$ ${totalReturn[i].toFixed(2)}</td></tr>`;
+        resultHtml += `<tr><td>${odds[i].toFixed(2)}</td><td style="color: white">R$ ${s.toFixed(2)}</td><td style="color: #00ff88">R$ ${profit[i].toFixed(2)}</td><td style="color: #00ff88">R$ ${totalReturn[i].toFixed(2)}</td></tr>`;
       });
       resultHtml += '</tbody></table>';
       document.getElementById('results').innerHTML = resultHtml;
