@@ -78,13 +78,13 @@
       color: #00ff88;
     }
     .green {
-      color: #ffffff;
+      color: #00ff88;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>Operação IA Bet</h2>
+    <h2 style="color: #ffffff;">Operação IA Bet</h2>
     <label for="totalStake">Valor Investido (R$):</label>
     <input type="number" id="totalStake" step="0.01">
 
@@ -155,9 +155,9 @@
       const totalReturn = stakes.map((s, i) => s * odds[i]);
 
       let resultHtml = '<h3>Distribuição das Apostas</h3>';
-      resultHtml += '<table><thead><tr><th>Odd</th><th>Investimento</th><th>Lucro Esperado</th><th>Lucro Total</th></tr></thead><tbody>';
+      resultHtml += '<table><thead><tr><th>Odd</th><th>Investimento</th><th>Lucro Total</th><th>Lucro Esperado</th></tr></thead><tbody>';
       stakes.forEach((s, i) => {
-        resultHtml += `<tr><td style="color: white">${odds[i].toFixed(2)}</td><td class="green">R$ ${s.toFixed(2)}</td><td class="green">R$ ${profit[i].toFixed(2)}</td><td class="green">R$ ${totalReturn[i].toFixed(2)}</td></tr>`;
+        resultHtml += `<tr><td style="color: white">${odds[i].toFixed(2)}</td><td style="color: white">R$ ${s.toFixed(2)}</td><td style="color: white">R$ ${totalReturn[i].toFixed(2)}</td><td class="green">R$ ${profit[i].toFixed(2)}</td></tr>`;
       });
       resultHtml += '</tbody></table>';
       document.getElementById('results').innerHTML = resultHtml;
@@ -171,16 +171,16 @@
           labels: odds.map((o, i) => `Odd ${i + 1}`),
           datasets: [
             {
-              label: 'Investimento',
-              data: stakes,
+              label: 'Lucro Esperado',
+              data: profit,
               borderColor: '#00ff88',
               backgroundColor: '#00ff8866',
               fill: true,
               tension: 0.3
             },
             {
-              label: 'Lucro Esperado',
-              data: profit,
+              label: 'Investimento',
+              data: stakes,
               borderColor: '#ffcc00',
               backgroundColor: '#ffcc0066',
               fill: true,
